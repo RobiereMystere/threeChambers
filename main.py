@@ -109,7 +109,7 @@ if __name__ == '__main__':
     count = 0
     for permutation1 in permutations:
         permutation = "".join(permutation1)
-        print("processing " + permutation, f"({count / len(permutations)} %)")
+        print("processing " + permutation, f"({100 * count / len(permutations)} %)")
         combinations = list(splitter(permutation))
         for combi in combinations:
             combs = combinations_w(combi)
