@@ -102,7 +102,7 @@ if __name__ == '__main__':
     dbu.close()
     n_gram = 2
     values = gen_combination_values(n_gram)
-    word1 = "ZION"
+    word1 = "HONZA"
     founds = []
 
     permutations = set(itertools.permutations(word1))
@@ -120,4 +120,4 @@ if __name__ == '__main__':
                         founds.append(combination_w)
                         print("\tFOUND " + combination_w)
         count += 1
-    print("Done :D !")
+    print("Done 100 % :D !")
