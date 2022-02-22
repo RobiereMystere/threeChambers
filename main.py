@@ -1,4 +1,6 @@
 import itertools
+from time import perf_counter
+
 from loglib import log
 
 from database_utils import DatabaseUtils
@@ -93,19 +95,16 @@ def combinations_w(word):
     return poss
 
 
-if __name__ == '__main__':
-    dbu = DatabaseUtils("database/words.db")
-    select = dbu.select("words", "english")
-    english = []
-    for element in select:
-        english.append(element[0])
-    dbu.close()
-    n_gram = 2
-    values = gen_combination_values(n_gram)
-    word1 = "HONZA"
-    founds = []
+def chronomeister(function, *args):
+    start = perf_counter()
+    function(*args)
+    stop = perf_counter()
+    return stop - start
 
-    permutations = set(itertools.permutations(word1))
+
+def permute(word):
+    founds = []
+    permutations = set(itertools.permutations(word))
     count = 0
     for permutation1 in permutations:
         permutation = "".join(permutation1)
@@ -116,8 +115,32 @@ if __name__ == '__main__':
             if combs is not None:
                 combs = set(combs)
                 for combination_w in combs:
-                    if combination_w.upper() in english and combination_w not in founds:
-                        founds.append(combination_w)
-                        print("\tFOUND " + combination_w)
+                    for perm_c in set(itertools.permutations(combination_w)):
+                        permutation_c = "".join(perm_c)
+                        if permutation_c.upper() in english and permutation_c not in founds:
+                            founds.append(permutation_c)
+                            print("\tFOUND " + permutation_c)
         count += 1
     print("Done 100 % :D !")
+    return founds
+
+
+if __name__ == '__main__':
+    dbu = DatabaseUtils("database/words.db")
+    select = dbu.select("words", "english")
+    english = []
+    for element in select:
+        english.append(element[0])
+    dbu.close()
+    n_gram = 2
+    values = gen_combination_values(n_gram)
+    word1 = "ZION"
+    start = perf_counter()
+    founds = permute(word1)
+    stop = perf_counter()
+    print(founds)
+    count = 0
+    if False:
+        for found in founds:
+            print(f"GLOBAL  {count * 100 / len(founds)}%")
+            permute(found)
