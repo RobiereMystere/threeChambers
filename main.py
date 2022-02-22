@@ -1,4 +1,5 @@
 import itertools
+from loglib import log
 
 from database_utils import DatabaseUtils
 
@@ -56,14 +57,36 @@ def gematria(word):
     return result
 
 
+values = gen_combination_values(2)
+
+
+def splitter(string):
+    for i in range(1, len(string)):
+        start = string[0:i]
+        end = string[i:]
+        yield start, end
+        for split in splitter(end):
+            result = [start]
+            result.extend(split)
+            yield result
+
+
 def combinations_w(word):
     """returns all possible word with replacement by each letter value """
+
     letters_values = []
     for c in word:
-        letters_values.append(alphabet[c])
+        try:
+            letters_values.append(alphabet[c])
+        except KeyError:
+            alphabet[c] = gematria(c)
+            letters_values.append(alphabet[c])
     word_poss = []
     for l_value in letters_values:
-        word_poss.append(list(values[l_value]))
+        try:
+            word_poss.append(list(values[l_value]))
+        except KeyError:
+            return None
     poss = []
     for i in set(itertools.product(*word_poss)):
         poss.append("".join(i))
@@ -72,9 +95,29 @@ def combinations_w(word):
 
 if __name__ == '__main__':
     dbu = DatabaseUtils("database/words.db")
-    values = gen_combination_values(2)
-    for i in combinations_w("ZION"):
-        indb = dbu.select_one("words", "english", "english = '" + i.upper() + "'")
-        if indb is not None:
-            print(indb[0])
+    select = dbu.select("words", "english")
+    english = []
+    for element in select:
+        english.append(element[0])
     dbu.close()
+    n_gram = 2
+    values = gen_combination_values(n_gram)
+    word1 = "ZION"
+    founds = []
+
+    permutations = set(itertools.permutations(word1))
+    count = 0
+    for permutation1 in permutations:
+        permutation = "".join(permutation1)
+        print("processing " + permutation, f"({count / len(permutations)} %)")
+        combinations = list(splitter(permutation))
+        for combi in combinations:
+            combs = combinations_w(combi)
+            if combs is not None:
+                combs = set(combs)
+                for combination_w in combs:
+                    if combination_w.upper() in english and combination_w not in founds:
+                        founds.append(combination_w)
+                        print("\tFOUND " + combination_w)
+        count += 1
+    print("Done :D !")
