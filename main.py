@@ -39,9 +39,11 @@ def gen_combination_values(n):
     comb_values = {}
     for i in range(n + 1):
         for product in itertools.product(alphabet.keys(), repeat=i):
+            prod = list(product)
+            prod.sort()
             value = 0
             comb = ""
-            for char in product:
+            for char in prod:
                 value += alphabet[char]
                 comb += char
             try:
@@ -75,7 +77,6 @@ def splitter(string):
 
 def combinations_w(word):
     """returns all possible word with replacement by each letter value """
-
     letters_values = []
     for c in word:
         try:
@@ -115,11 +116,16 @@ def permute(word):
             if combs is not None:
                 combs = set(combs)
                 for combination_w in combs:
+                    start = perf_counter()
                     for perm_c in set(itertools.permutations(combination_w)):
                         permutation_c = "".join(perm_c)
-                        if permutation_c.upper() in english and permutation_c not in founds:
+                        if permutation_c.upper() in english \
+                                and permutation_c not in founds \
+                                and perm_c not in permutations:
                             founds.append(permutation_c)
                             print("\tFOUND " + permutation_c)
+                    stop = perf_counter()
+                    print(f"{combination_w}\t{stop - start}")
         count += 1
     print("Done 100 % :D !")
     return founds
@@ -139,8 +145,3 @@ if __name__ == '__main__':
     founds = permute(word1)
     stop = perf_counter()
     print(founds)
-    count = 0
-    if False:
-        for found in founds:
-            print(f"GLOBAL  {count * 100 / len(founds)}%")
-            permute(found)
