@@ -1,5 +1,7 @@
 import sqlite3
-from loglib import log
+from loglib import Logger
+
+logger = Logger(True)
 
 
 class DatabaseUtils:
@@ -20,8 +22,8 @@ class DatabaseUtils:
         query = 'INSERT INTO ' + table + ' VALUES (' + ("?," * len(values))
         query = query[:-1] + ');'
 
-        log(query)
-        log(values)
+        logger.log(query)
+        logger.log(values)
         self.execute(query, values)
 
     def create_table(self, table_name: str, table_dict: dict):
@@ -49,13 +51,13 @@ class DatabaseUtils:
         if where != "":
             query += " WHERE " + where
         query += ";"
-        log(query)
+        logger.log(query)
         self.cursor.execute(query)
         return self.cursor.fetchone()
 
     def last_id(self, table):
         query = "SELECT * FROM " + table + " ORDER BY id DESC LIMIT 1"
-        log(query)
+        logger.log(query)
         self.cursor.execute(query)
         last_id = self.cursor.fetchone()
         if last_id is None:

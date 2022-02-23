@@ -1,5 +1,7 @@
-DEBUG = False
+class Logger:
+    def __init__(self, DEBUG=True):
+        self.DEBUG = DEBUG
 
-def log(s):
-    if DEBUG:
-        print(str(s))
+    def log(self, s):
+        if self.DEBUG:
+            print(str(s))
