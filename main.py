@@ -210,7 +210,7 @@ if __name__ == '__main__':
     dbu.close()
     n_gram = 2
     values = gen_combination_values(n_gram)
-    word1 = "BABYLON"
+    word1 = "ZION"
     found_words = permute(word1)
     print(found_words)
     stop = perf_counter()
