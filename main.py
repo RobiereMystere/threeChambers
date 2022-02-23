@@ -163,35 +163,32 @@ def chronomeister(function, *args):
 def permute(word):
     founds = []
 
-    if word not in done:
-        permutations = list(set(itertools.permutations(word)))
-        count = 0
-        for perms in permutations:
-            permutation = "".join(perms)
-            # print("processing " + str(permutation), f"({100 * count / len(permutations)} %)")
+    permutations = list(set(itertools.permutations(word)))
+    count = 0
+    for perms in permutations:
+        permutation = "".join(perms)
+        # print("processing " + str(permutation), f"({100 * count / len(permutations)} %)")
 
-            combinations = list(splitter(permutation))
-            for combi in combinations:
-                combs = combinations_w(combi)
-                if combs is not None:
-                    combs = set(combs)
-                    combs = list(combs)
-                    for combination_w in combs:
-                        if combination_w not in done:
-                            permutations_comb = set(itertools.permutations(combination_w))
-                            permutations_comb = list(permutations_comb)
-                            start = perf_counter()
-                            for perm_c in permutations_comb:
-                                permutation_c = "".join(perm_c)
-                                done.add(permutation_c)
-                                if permutation_c.upper() in words \
-                                        and permutation_c not in founds \
-                                        and perm_c not in combinations:
-                                    founds.append(permutation_c)
-                                    # print("\tFOUND " + permutation_c, gematria(permutation_c))
-                            stop = perf_counter()
-                            logger.log(f"{combination_w}\t{stop - start}")
-            count += 1
+        combinations = list(splitter(permutation))
+        for combi in combinations:
+            combs = combinations_w(combi)
+            if combs is not None:
+                combs = set(combs)
+                combs = list(combs)
+                for combination_w in combs:
+                    permutations_comb = set(itertools.permutations(combination_w))
+                    permutations_comb = list(permutations_comb)
+                    start = perf_counter()
+                    for perm_c in permutations_comb:
+                        permutation_c = "".join(perm_c)
+                        if permutation_c.upper() in words \
+                                and permutation_c not in founds \
+                                and perm_c not in combinations:
+                            founds.append(permutation_c)
+                            # print("\tFOUND " + permutation_c, gematria(permutation_c))
+                    stop = perf_counter()
+                    logger.log(f"{combination_w}\t{stop - start}")
+        count += 1
     # print("Done 100 % :D !")
     return founds
 
@@ -199,20 +196,16 @@ def permute(word):
 if __name__ != '__main__':
     print("{")
 
-if __name__ == '__main__':
-    done = set()
+
+def main():
     dbu = DatabaseUtils("database/lp-words.db")
     select = dbu.select("words", "english")
-    words = []
     for element in select:
         words.append(element[0])
     with open("resources/liberunsolved.txt") as f:
         unsolved = set(f.read().split())
 
     dbu.close()
-    n_gram = 2
-    values = gen_combination_values(n_gram)
-
     for word in unsolved:
         start = perf_counter()
         print("WORD :", word)
@@ -220,3 +213,11 @@ if __name__ == '__main__':
         print(found_words)
         stop = perf_counter()
         print(f"Duration : {stop - start} secondes")
+
+
+if __name__ == '__main__':
+    n_gram = 2
+    values = gen_combination_values(n_gram)
+    words = []
+
+    main()
