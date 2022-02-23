@@ -151,6 +151,7 @@ def permute(word):
                             logger.log(f"{combination_w}\t{stop - start}")
             count += 1
     print("Done 100 % :D !")
+    return founds
 
 
 if __name__ != '__main__':
@@ -160,6 +161,7 @@ if __name__ != '__main__':
         print(i)
 
 if __name__ == '__main__':
+    start = perf_counter()
     done = set()
     dbu = DatabaseUtils("database/words.db")
     select = dbu.select("words", "english")
@@ -169,8 +171,8 @@ if __name__ == '__main__':
     dbu.close()
     n_gram = 2
     values = gen_combination_values(n_gram)
-    word1 = "HONZA"
-    start = perf_counter()
-    founds = permute(word1)
+    word1 = "BABYLON"
+    found_words = permute(word1)
+    print(found_words)
     stop = perf_counter()
-    print(founds)
+    print(f"Duration : {stop - start} secondes")
