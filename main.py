@@ -80,7 +80,7 @@ alphabet_prime = {'A': 2,
 
 alphabet = alphabet_prime
 
-wanted_letters = list(alphabet.keys())
+wanted_letters = list(alphabet.keys())[:]
 
 
 def perm(word):
