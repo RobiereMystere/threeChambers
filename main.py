@@ -168,7 +168,7 @@ def permute(word):
         count = 0
         for perms in permutations:
             permutation = "".join(perms)
-            print("processing " + str(permutation), f"({100 * count / len(permutations)} %)")
+            # print("processing " + str(permutation), f"({100 * count / len(permutations)} %)")
 
             combinations = list(splitter(permutation))
             for combi in combinations:
@@ -184,15 +184,15 @@ def permute(word):
                             for perm_c in permutations_comb:
                                 permutation_c = "".join(perm_c)
                                 done.add(permutation_c)
-                                if permutation_c.upper() in english \
+                                if permutation_c.upper() in words \
                                         and permutation_c not in founds \
                                         and perm_c not in combinations:
                                     founds.append(permutation_c)
-                                    print("\tFOUND " + permutation_c, gematria(permutation_c))
+                                    # print("\tFOUND " + permutation_c, gematria(permutation_c))
                             stop = perf_counter()
                             logger.log(f"{combination_w}\t{stop - start}")
             count += 1
-    print("Done 100 % :D !")
+    # print("Done 100 % :D !")
     return founds
 
 
@@ -200,18 +200,23 @@ if __name__ != '__main__':
     print("{")
 
 if __name__ == '__main__':
-    start = perf_counter()
     done = set()
-    dbu = DatabaseUtils("database/words.db")
+    dbu = DatabaseUtils("database/lp-words.db")
     select = dbu.select("words", "english")
-    english = []
+    words = []
     for element in select:
-        english.append(element[0])
+        words.append(element[0])
+    with open("resources/liberunsolved.txt") as f:
+        unsolved = set(f.read().split())
+
     dbu.close()
     n_gram = 2
     values = gen_combination_values(n_gram)
-    word1 = "ZION"
-    found_words = permute(word1)
-    print(found_words)
-    stop = perf_counter()
-    print(f"Duration : {stop - start} secondes")
+
+    for word in unsolved:
+        start = perf_counter()
+        print("WORD :", word)
+        found_words = permute(word)
+        print(found_words)
+        stop = perf_counter()
+        print(f"Duration : {stop - start} secondes")
