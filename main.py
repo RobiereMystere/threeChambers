@@ -6,6 +6,17 @@ from loglib import Logger
 from database_utils import DatabaseUtils
 
 logger = Logger(False)
+# wanted_letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
+# wanted_letters = ["J", "K", "L", "M", "N", "O", "P", "Q", "R", "S"]
+# wanted_letters = ["S", "T", "U", "V", "W", "X", "Y", "Z"]
+# vše
+wanted_letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T",
+                  "U", "V", "W", "X", "Y", "Z"]
+# první druha
+# wanted_letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S"]
+# první třetí
+# wanted_letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "T", "U", "V", "W", "X", "Y", "Z"]
+# druha třetí
 
 primes = [2, 3, 5, 7, 11,
           13, 17, 19, 23,
@@ -78,9 +89,10 @@ alphabet_prime = {'A': 2,
                   'Z': 101
                   }
 
-alphabet = alphabet_prime
+alphabet = alphabet_three_chambers
 
-wanted_letters = list(alphabet.keys())[:]
+
+# wanted_letters = list(alphabet.keys())[:]
 
 
 def perm(word):
@@ -206,13 +218,15 @@ def main():
         unsolved = set(f.read().split())
 
     dbu.close()
-    for word in unsolved:
+    for word in sorted(unsolved, key=len):
         start = perf_counter()
-        print("WORD :", word)
         found_words = permute(word)
-        print(found_words)
+        if len(found_words) > 0:
+            print("WORD :", word)
+            print(f"\tFOUND :{found_words}")
         stop = perf_counter()
-        print(f"Duration : {stop - start} secondes")
+
+        logger.log(f"Duration : {stop - start} secondes")
 
 
 if __name__ == '__main__':
